@@ -33,9 +33,6 @@
     <name>Jakarta Validation Specification</name>
 
     <properties>
-        <asciidoctor-maven.version>2.2.4</asciidoctor-maven.version>
-        <asciidoctorj-pdf.version>2.3.10</asciidoctorj-pdf.version>
-
         <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
         <bv.revdate>${maven.build.timestamp}</bv.revdate><!-- Replace with fixed date when releasing -->
         <license>evaluation</license><!-- value to use for releasing: license = evaluation or final -->
@@ -45,10 +42,18 @@
         <bv.version.spec>3.1</bv.version.spec> <!-- The major.minor of the specification (no service releases) -->
         <bv.version.qualifier>Draft</bv.version.qualifier> <!-- e.g. ' (Early Draft 1)' - be careful about the space before the qualifier -->
 
-        <hibernate-asciidoctor-theme.version>2.0.0.Final</hibernate-asciidoctor-theme.version>
-        <hibernate-asciidoctor-extensions.version>2.0.1.Final</hibernate-asciidoctor-extensions.version>
+        <version.min.maven>3.9.9</version.min.maven>
+
+        <version.hibernate-asciidoctor-theme>2.0.0.Final</version.hibernate-asciidoctor-theme>
+        <version.hibernate-asciidoctor-extensions>2.0.1.Final</version.hibernate-asciidoctor-extensions>
+
+        <version.asciidoctorj-pdf>2.3.10</version.asciidoctorj-pdf>
 
         <!--<ci-user>jenkins</ci-user> No CI integration ported currently-->
+
+        <version.maven-wrapper-plugin>3.3.2</version.maven-wrapper-plugin>
+        <version.maven-dependency-plugin>3.6.1</version.maven-dependency-plugin>
+        <version.asciidoctor-maven>2.2.4</version.asciidoctor-maven>
     </properties>
 
 
@@ -128,18 +133,31 @@
         <dependency>
             <groupId>org.hibernate.infra</groupId>
             <artifactId>hibernate-asciidoctor-theme</artifactId>
-            <version>${hibernate-asciidoctor-theme.version}</version>
+            <version>${version.hibernate-asciidoctor-theme}</version>
             <type>zip</type>
         </dependency>
     </dependencies>
 
     <build>
         <defaultGoal>clean package</defaultGoal>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-wrapper-plugin</artifactId>
+                    <version>${version.maven-wrapper-plugin}</version>
+                    <configuration>
+                        <mavenVersion>${version.min.maven}</mavenVersion>
+                        <distributionType>bin</distributionType>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.6.1</version>
+                <version>${version.maven-dependency-plugin}</version>
                 <executions>
                   <execution>
                     <id>unpack-validation-api</id>
@@ -170,17 +188,17 @@
             <plugin>
                 <groupId>org.asciidoctor</groupId>
                 <artifactId>asciidoctor-maven-plugin</artifactId>
-                <version>${asciidoctor-maven.version}</version>
+                <version>${version.asciidoctor-maven}</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.asciidoctor</groupId>
                         <artifactId>asciidoctorj-pdf</artifactId>
-                        <version>${asciidoctorj-pdf.version}</version>
+                        <version>${version.asciidoctorj-pdf}</version>
                     </dependency>
                     <dependency>
                         <groupId>org.hibernate.infra</groupId>
                         <artifactId>hibernate-asciidoctor-extensions</artifactId>
-                        <version>${hibernate-asciidoctor-extensions.version}</version>
+                        <version>${version.hibernate-asciidoctor-extensions}</version>
                     </dependency>
                 </dependencies>
                 <executions>
