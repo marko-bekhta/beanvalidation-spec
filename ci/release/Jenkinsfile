@@ -1,0 +1,29 @@
+pipeline {
+	agent any
+	tools {
+		jdk 'temurin-jdk21-latest'
+	}
+	options {
+		buildDiscarder logRotator(daysToKeepStr: '30', numToKeepStr: '10')
+		disableConcurrentBuilds(abortPrevious: false)
+	}
+	parameters {
+		choice(name: 'SPEC_LICENSE', choices: ['evaluation', 'final'], description: 'The license parameter to use for the spec build.')
+		choice(name: 'RELEASE', choices: ['Draft', 'Final'], description: 'The spec revision, either Draft or Final.')
+	}
+
+	stages {
+		stage('Build Spec with Maven') {
+			steps {
+				script {
+					sh "./mvnw -Dlicense=${params.SPEC_LICENSE} -Dbv.version.qualifier=${params.RELEASE} clean package"
+				}
+			}
+		}
+	}
+	post {
+		success {
+			archiveArtifacts artifacts: 'target/pdf/*.pdf,target/html/*.html', fingerprint: true
+		}
+	}
+}
